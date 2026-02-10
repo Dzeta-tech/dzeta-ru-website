@@ -27,7 +27,7 @@
 </script>
 
 <section
-	class="min-h-[calc(100dvh-64px)] bg-[var(--color-background-primary)] px-4 pt-4 sm:px-6 lg:px-8"
+	class="bg-[var(--color-background-primary)] px-4 pt-4 sm:px-6 lg:px-8"
 	aria-label="Главный экран"
 >
 	<div class="mx-auto w-full max-w-7xl pb-20 relative">

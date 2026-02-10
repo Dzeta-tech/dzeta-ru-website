@@ -84,19 +84,19 @@
 	<div class="px-4 sm:px-6 lg:px-8">
 		<h2
 			id="contact-heading"
-			class="text-style-h1 mb-[10px] text-[var(--color-paragraph-1)]"
+			class="text-style-h1 mb-[30px] text-[var(--color-paragraph-1)]"
 			use:reveal={{ delay: 0 }}
 		>
 			Давайте обсудим ваш проект
 		</h2>
-		<p class="text-style-p2 mb-[10px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 80 }}>
+		<p class="text-style-h4 mb-[10px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 80 }}>
 			Перед началом работы мы просим вас ответить на пару вопросов.
 		</p>
-		<p class="text-style-p2 mb-[30px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 110 }}>
+		<p class="text-style-h4 mb-[30px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 110 }}>
 			Ваши ответы — лучшая заявка для нас. На их основе мы поймем, чем сможем быть полезны: соберём
 			информацию и подготовимся ко встрече.
 		</p>
-		<div class="mb-[30px]" use:reveal={{ delay: 140 }}>
+		<div class="mb-[30px] w-full md:flex md:gap-1" use:reveal={{ delay: 140 }}>
 			<p class="text-style-p2 text-[var(--color-paragraph-2)]">
 				Оставьте контакт для связи с менеджером 
 			</p>

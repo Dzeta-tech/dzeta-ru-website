@@ -92,12 +92,12 @@
 	<div class="px-4 sm:px-6 lg:px-8">
 		<h2
 			id="about-heading"
-			class="text-style-h4 mb-[40px] text-[var(--color-paragraph-1)] md:text-style-h2"
+			class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]"
 			use:reveal={{ delay: 0 }}
 		>
 			О нас
 		</h2>
-		<p class="text-style-p2 mb-[40px] text-[var(--color-paragraph-1)] md:text-style-h3" use:reveal={{ delay: 80 }}>
+		<p class="sm:text-style-p2 mb-[40px] text-[var(--color-paragraph-1)] text-style-h3" use:reveal={{ delay: 80 }}>
 			ДЗЕТА.ТЕХ — технологический партнёр, который работает не как подрядчик, а как часть вашей
 			команды, фокусируясь на продукте и его влиянии на бизнес-результаты.
 		</p>
