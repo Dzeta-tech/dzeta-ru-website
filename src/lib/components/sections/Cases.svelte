@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import patoshiSvg from '$lib/assets/patoshi.svg?raw';
 	import patoshi1Svg from '$lib/assets/patoshi1.svg?raw';
@@ -97,6 +98,93 @@
 			images: [c01Svg, c02Svg, c03Svg, c04Svg, c05Svg, c06Svg, c07Svg, c08Svg, c09Svg, c10Svg, c11Svg]
 		}
 	];
+
+	let carouselRefs: Array<HTMLDivElement | null> = [];
+	let canScrollLeft = $state(Array(cases.length).fill(false));
+	let canScrollRight = $state(Array(cases.length).fill(false));
+
+	function setScrollState(index: number, left: boolean, right: boolean) {
+		const leftState = [...canScrollLeft];
+		const rightState = [...canScrollRight];
+		leftState[index] = left;
+		rightState[index] = right;
+		canScrollLeft = leftState;
+		canScrollRight = rightState;
+	}
+
+	function updateCarouselState(index: number) {
+		const carousel = carouselRefs[index];
+		if (!carousel) return;
+
+		const maxScrollLeft = carousel.scrollWidth - carousel.clientWidth;
+		const hasOverflow = maxScrollLeft > 1;
+		const current = carousel.scrollLeft;
+		const edgeThreshold = 4;
+
+		setScrollState(
+			index,
+			hasOverflow && current > edgeThreshold,
+			hasOverflow && current < maxScrollLeft - edgeThreshold
+		);
+	}
+
+	function registerCarousel(node: HTMLDivElement, index: number) {
+		carouselRefs[index] = node;
+		const handleScroll = () => updateCarouselState(index);
+		node.addEventListener('scroll', handleScroll, { passive: true });
+		requestAnimationFrame(() => updateCarouselState(index));
+
+		return {
+			destroy() {
+				node.removeEventListener('scroll', handleScroll);
+				carouselRefs[index] = null;
+			}
+		};
+	}
+
+	function scrollToAdjacentSlide(index: number, direction: 'prev' | 'next') {
+		const carousel = carouselRefs[index];
+		if (!carousel) return;
+
+		const slides = Array.from(carousel.querySelectorAll<HTMLElement>('.case-carousel__slide'));
+		if (!slides.length) return;
+
+		const currentLeft = carousel.scrollLeft;
+		let targetLeft = currentLeft;
+
+		if (direction === 'next') {
+			const nextSlide = slides.find((slide) => slide.offsetLeft > currentLeft + 4);
+			targetLeft = (nextSlide ?? slides[slides.length - 1]).offsetLeft;
+		} else {
+			const reversed = [...slides].reverse();
+			const prevSlide = reversed.find((slide) => slide.offsetLeft < currentLeft - 4);
+			targetLeft = (prevSlide ?? slides[0]).offsetLeft;
+		}
+
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		carousel.scrollTo({
+			left: targetLeft,
+			behavior: prefersReducedMotion ? 'auto' : 'smooth'
+		});
+	}
+
+	onMount(() => {
+		const updateAll = () => {
+			for (let i = 0; i < cases.length; i += 1) {
+				updateCarouselState(i);
+			}
+		};
+
+		const handleResize = () => updateAll();
+		window.addEventListener('resize', handleResize, { passive: true });
+		requestAnimationFrame(updateAll);
+		const delayedInit = window.setTimeout(updateAll, 220);
+
+		return () => {
+			window.removeEventListener('resize', handleResize);
+			window.clearTimeout(delayedInit);
+		};
+	});
 </script>
 
 <section
@@ -121,22 +209,54 @@
 			use:reveal={{ delay: 80 + i * 60 }}
 		>
 			<!-- Карусель: горизонтальный скролл изображений -->
-			<div
-				class="case-carousel flex gap-4 overflow-x-auto pb-2 md:gap-6 mb-[20px]"
-				role="region"
-				aria-label="Изображения проекта {item.name}"
-				data-native-scroll
-			>
-				{#each item.images as svg}
-					<div
-						class="case-carousel__slide flex-shrink-0 overflow-hidden rounded-2xl bg-[var(--color-paragraph-1)]"
-						style="width: min(85vw, 520px); height: min(50vw, 320px);"
-					>
-						<div class="case-carousel__svg h-full w-full" aria-hidden="true">
-							{@html svg}
+			<div class="case-carousel-wrap mb-[20px]">
+				<div
+					class="case-carousel flex gap-4 overflow-x-auto pb-2 md:gap-6"
+					role="region"
+					aria-label="Изображения проекта {item.name}"
+					data-native-scroll
+					use:registerCarousel={i}
+				>
+					{#each item.images as svg}
+						<div
+							class="case-carousel__slide flex-shrink-0 overflow-hidden rounded-2xl bg-[var(--color-paragraph-1)]"
+							style="width: min(85vw, 520px); height: min(50vw, 320px);"
+						>
+							<div class="case-carousel__svg h-full w-full" aria-hidden="true">
+								{@html svg}
+							</div>
 						</div>
+					{/each}
+				</div>
+
+				{#if canScrollLeft[i] || canScrollRight[i]}
+					<div class="case-carousel-nav md:hidden">
+						{#if canScrollLeft[i]}
+							<button
+								type="button"
+								class="case-carousel-arrow"
+								aria-label="Прокрутить изображения влево"
+								onclick={() => scrollToAdjacentSlide(i, 'prev')}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+									<path d="M14.5 5L7.5 12L14.5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</button>
+						{/if}
+						{#if canScrollRight[i]}
+							<button
+								type="button"
+								class="case-carousel-arrow ml-auto"
+								aria-label="Прокрутить изображения вправо"
+								onclick={() => scrollToAdjacentSlide(i, 'next')}
+							>
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+									<path d="M9.5 5L16.5 12L9.5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+								</svg>
+							</button>
+						{/if}
 					</div>
-				{/each}
+				{/if}
 			</div>
 
 			<!-- Ниже: заголовок и описание -->
@@ -180,4 +300,35 @@
 		height: 100%;
 		display: block;
 	}
+
+	.case-carousel-wrap {
+		position: relative;
+	}
+
+	.case-carousel-nav {
+		position: absolute;
+		top: calc(50% - 8px);
+		left: 0;
+		right: 0;
+		transform: translateY(-50%);
+		display: flex;
+		align-items: center;
+		padding: 0 0.5rem;
+		pointer-events: none;
+	}
+
+	.case-carousel-arrow {
+		pointer-events: auto;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.25rem;
+		height: 2.25rem;
+		border-radius: 999px;
+		border: 1px solid rgba(255, 255, 255, 0.24);
+		background: rgba(0, 0, 0, 0.55);
+		color: #fff;
+		backdrop-filter: blur(4px);
+	}
+
 </style>

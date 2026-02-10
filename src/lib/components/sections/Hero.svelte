@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components';
 	import { reveal } from '$lib/actions/reveal';
+	import logoSvg from '$lib/assets/logo.svg?raw';
 
 	const tags = ['WEB', 'Mobile', 'Telegram', 'AI', 'Highload'] as const;
 	let step = $state(1);
@@ -71,7 +72,9 @@
 		{/if}
 
 		<div class="hero-final" class:is-visible={step === 4}>
-			<div class="hero-final-logo" use:reveal={{ delay: 40 }}>[d.t]</div>
+			<div class="hero-final-logo" use:reveal={{ delay: 40 }}>
+				{@html logoSvg}
+			</div>
 			<h1 class="hero-final-title" use:reveal={{ delay: 120 }}>
 				Создаём цифровые продукты, которые приносят бизнес-результат
 			</h1>
@@ -231,16 +234,13 @@
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--color-paragraph-1);
-		color: var(--color-background-secondary);
-		font-family: Helvetica, Arial, 'Helvetica Neue', sans-serif;
-		font-size: 3rem;
-		line-height: 1;
-		font-weight: 400;
-		padding: 0.6rem 1rem 0.7rem;
-		border-radius: 0.35rem;
-		white-space: nowrap;
 		margin: 6px 0 20px;
+	}
+
+	.hero-final-logo :global(svg) {
+		display: block;
+		width: clamp(180px, 24vw, 290px);
+		height: auto;
 	}
 	.hero-final-title {
 		margin: 0 0 20px;

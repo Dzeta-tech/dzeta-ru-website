@@ -35,26 +35,29 @@
 	<div class="px-4 sm:px-6 lg:px-8">
 		<h2
 			id="contact-heading"
-			class="text-[64px] mb-[10px] line-height-[1.1] font-sans text-[var(--color-paragraph-1)]"
+			class="text-style-h1 mb-[10px] text-[var(--color-paragraph-1)]"
 			use:reveal={{ delay: 0 }}
 		>
 			Давайте обсудим ваш проект
 		</h2>
-		<p class="text-style-p2 mb-[30px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 80 }}>
-			Перед началом работы мы просим вас ответить на пару вопросов. Ваши ответы — лучшая заявка
-			для нас. На их основе мы поймем, чем сможем быть полезны: соберём информацию и подготовимся ко встрече.
+		<p class="text-style-p2 mb-[10px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 80 }}>
+			Перед началом работы мы просим вас ответить на пару вопросов.
 		</p>
-		<span class="flex mb-[30px] gap-1" use:reveal={{ delay: 140 }}>
+		<p class="text-style-p2 mb-[30px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 110 }}>
+			Ваши ответы — лучшая заявка для нас. На их основе мы поймем, чем сможем быть полезны: соберём
+			информацию и подготовимся ко встрече.
+		</p>
+		<div class="mb-[30px]" use:reveal={{ delay: 140 }}>
 			<p class="text-style-p2 text-[var(--color-paragraph-2)]">
 				Оставьте контакт для связи с менеджером 
 			</p>
 			<p class="text-style-p2 text-[var(--color-paragraph-1)]">
 				и заполните бриф
 			</p>
-		</span>
+		</div>
 
-		<form class="flex flex-col gap-6" onsubmit={handleSubmit}>
-			<div class="flex flex-col gap-[20px]" use:reveal={{ delay: 180 }}>
+		<form class="flex flex-col gap-[10px] md:gap-6" onsubmit={handleSubmit}>
+			<div class="flex flex-col gap-[10px] md:gap-[20px]" use:reveal={{ delay: 180 }}>
 				<label for="contact-field" class="text-style-p2 text-[var(--color-paragraph-2)]">
 					Как с вами связаться?
 				</label>
@@ -68,7 +71,7 @@
 				/>
 			</div>
 
-			<div class="grid gap-4 sm:grid-cols-2" use:reveal={{ delay: 240 }}>
+			<div class="grid gap-[10px] sm:grid-cols-2 sm:gap-4" use:reveal={{ delay: 240 }}>
 				<div>
 					<label for="project-type" class="sr-only">Тип проекта</label>
 					<select
@@ -101,7 +104,7 @@
 				</Button>
 			</div>
 
-			<p class="text-style-p2 text-[#8d8d8d]" use:reveal={{ delay: 340 }}>
+			<p class="text-style-p2 text-[#8d8d8d] mt-[10px]" use:reveal={{ delay: 340 }}>
 				Нажимая на кнопку, вы даёте согласие на обработку персональных данных и соглашаетесь с
 				политикой конфиденциальности
 			</p>

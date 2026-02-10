@@ -1,4 +1,6 @@
 <script lang="ts">
+	import logoSvg from '$lib/assets/logo.svg?raw';
+
 	const navItems = [
 		{ label: 'О нас', href: '/#about' },
 		{ label: 'Кейсы', href: '/#cases' },
@@ -39,8 +41,9 @@
 			class="header-logo flex flex-col rounded border border-[var(--color-paragraph-1)] bg-[var(--color-background-secondary)] px-2 py-1 outline-none transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-[var(--color-paragraph-1)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-header-bg)] md:flex-row md:border-0 md:bg-transparent md:px-0 md:py-0"
 			aria-label="На главную"
 		>
-			<span class="font-sans text-lg font-semibold tracking-tight text-[var(--color-paragraph-1)] md:text-xl">[d<span class="text-[var(--color-paragraph-2)] md:text-[var(--color-paragraph-1)]">.</span>t]</span>
-			<span class="mt-0.5 h-px w-full bg-[var(--color-paragraph-1)] md:hidden" aria-hidden="true"></span>
+			<span class="header-logo-svg" aria-hidden="true">
+				{@html logoSvg}
+			</span>
 		</a>
 
 		<!-- Desktop / Tablet: horizontal nav -->
@@ -133,5 +136,17 @@
 	/* Mobile overlay: slide in from left */
 	#mobile-menu nav {
 		will-change: transform;
+	}
+
+	.header-logo-svg :global(svg) {
+		display: block;
+		width: 59px;
+		height: auto;
+	}
+
+	@media (min-width: 768px) {
+		.header-logo-svg :global(svg) {
+			width: 59px;
+		}
 	}
 </style>
