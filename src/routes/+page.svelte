@@ -1,2 +1,18 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+	import { Hero, About, Blog, Contact } from '$lib/components/sections';
+	import { onMount } from 'svelte';
+
+	let CasesComponent = $state<typeof import('$lib/components/sections/Cases.svelte')['default'] | null>(null);
+	onMount(async () => {
+		const mod = await import('$lib/components/sections/Cases.svelte');
+		CasesComponent = mod.default;
+	});
+</script>
+
+<Hero />
+<About />
+{#if CasesComponent}
+	<CasesComponent />
+{/if}
+<Blog />
+<Contact />

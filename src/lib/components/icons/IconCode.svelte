@@ -1,0 +1,11 @@
+<script lang="ts">
+	interface Props {
+		class?: string;
+		size?: number;
+	}
+	let { class: className = '', size = 24 }: Props = $props();
+</script>
+
+<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 36 36" fill="none" class={className} aria-hidden="true">
+	<path d="M13.2 25.2L16 22.35L11.65 18L16 13.65L13.2 10.8L6 18L13.2 25.2ZM22.8 25.2L30 18L22.8 10.8L20 13.65L24.35 18L20 22.35L22.8 25.2ZM4 36C2.9 36 1.95833 35.6083 1.175 34.825C0.391667 34.0417 0 33.1 0 32V4C0 2.9 0.391667 1.95833 1.175 1.175C1.95833 0.391667 2.9 0 4 0H32C33.1 0 34.0417 0.391667 34.825 1.175C35.6083 1.95833 36 2.9 36 4V32C36 33.1 35.6083 34.0417 34.825 34.825C34.0417 35.6083 33.1 36 32 36H4ZM4 32H32V4H4V32Z" fill="#767676"/>
+</svg>
