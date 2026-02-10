@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { reveal } from '$lib/actions/reveal';
 	import patoshiSvg from '$lib/assets/patoshi.svg?raw';
 	import patoshi1Svg from '$lib/assets/patoshi1.svg?raw';
 	import patoshi2Svg from '$lib/assets/patoshi2.svg?raw';
@@ -104,18 +105,27 @@
 	aria-labelledby="cases-heading"
 >
 	<div>
-		<h2 id="cases-heading" class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]">
+		<h2
+			id="cases-heading"
+			class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]"
+			use:reveal={{ delay: 0 }}
+		>
 			Кейсы
 		</h2>
 	</div>
 
-	{#each cases as item}
-		<article class="mb-16 last:mb-0 md:mb-24" aria-labelledby="case-{item.id}-title">
+	{#each cases as item, i}
+		<article
+			class="mb-16 last:mb-0 md:mb-24"
+			aria-labelledby="case-{item.id}-title"
+			use:reveal={{ delay: 80 + i * 60 }}
+		>
 			<!-- Карусель: горизонтальный скролл изображений -->
 			<div
 				class="case-carousel flex gap-4 overflow-x-auto pb-2 md:gap-6 mb-[20px]"
 				role="region"
 				aria-label="Изображения проекта {item.name}"
+				data-native-scroll
 			>
 				{#each item.images as svg}
 					<div

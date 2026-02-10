@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { Button } from '$lib/components';
+	import { reveal } from '$lib/actions/reveal';
 
 	const tags = ['WEB', 'Mobile', 'Telegram', 'AI', 'Highload'] as const;
 	let step = $state(1);
@@ -70,9 +71,11 @@
 		{/if}
 
 		<div class="hero-final" class:is-visible={step === 4}>
-			<div class="hero-final-logo">[d.t]</div>
-			<h1 class="hero-final-title">Создаём цифровые продукты, которые приносят бизнес-результат</h1>
-			<div class="hero-tags">
+			<div class="hero-final-logo" use:reveal={{ delay: 40 }}>[d.t]</div>
+			<h1 class="hero-final-title" use:reveal={{ delay: 120 }}>
+				Создаём цифровые продукты, которые приносят бизнес-результат
+			</h1>
+			<div class="hero-tags" use:reveal={{ delay: 200 }}>
 				{#each tags as tag, i}
 					<span class="text-style-h3 text-[var(--color-paragraph-1)]">{tag}</span>
 					{#if i < tags.length - 1}
@@ -80,7 +83,7 @@
 					{/if}
 				{/each}
 			</div>
-			<div class="hero-buttons">
+			<div class="hero-buttons" use:reveal={{ delay: 280 }}>
 				<Button>Обсудить проект</Button>
 				<Button variant="outline">Посмотреть кейсы</Button>
 			</div>

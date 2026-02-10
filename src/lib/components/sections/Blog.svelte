@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components';
+	import { reveal } from '$lib/actions/reveal';
 
 	const posts = Array.from({ length: 5 }, (_, i) => ({
 		slug: `mock-${i + 1}`,
@@ -18,10 +19,14 @@
 	aria-labelledby="blog-heading"
 >
 	<div class="sm:px-6 lg:px-8">
-		<h2 id="blog-heading" class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]">
+		<h2
+			id="blog-heading"
+			class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]"
+			use:reveal={{ delay: 0 }}
+		>
 			Блог
 		</h2>
-		<p class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]">
+		<p class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 80 }}>
 			Инсайты о web3-разработке, токеномике и создании успешных крипто-проектов.
 		</p>
 	</div>
@@ -30,11 +35,13 @@
 		class="blog-scroll flex gap-6 overflow-x-auto px-4 pb-2 pt-2 md:gap-8 md:px-6"
 		role="region"
 		aria-label="Список постов блога"
+		data-native-scroll
 	>
-		{#each posts as post}
+		{#each posts as post, i}
 			<article
 				class="blog-card flex-shrink-0 rounded-[36px] bg-[var(--color-background-secondary)] p-5"
 				style="width: min(92vw, 520px);"
+				use:reveal={{ delay: 120 + i * 60 }}
 			>
 				<div class="block">
 					<!-- Изображение с оверлеем -->

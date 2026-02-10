@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { IconCode, IconRocket, IconSettings, IconServer, IconEdit, IconBrain, IconSearch } from '$lib/components/icons';
+	import { reveal } from '$lib/actions/reveal';
 	import tbankLogo from '$lib/assets/tbank.webp';
 	import nornikelLogo from '$lib/assets/nornikel.webp';
 	import sberLogo from '$lib/assets/sber.webp';
@@ -82,19 +83,24 @@
 	aria-labelledby="about-heading"
 >
 	<div class="px-4 sm:px-6 lg:px-8">
-		<h2 id="about-heading" class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]">
+		<h2
+			id="about-heading"
+			class="text-style-h2 mb-[40px] text-[var(--color-paragraph-1)]"
+			use:reveal={{ delay: 0 }}
+		>
 			О нас
 		</h2>
-		<p class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]">
+		<p class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 80 }}>
 			ДЗЕТА.ТЕХ — технологический партнёр, который работает не как подрядчик, а как часть вашей
 			команды, фокусируясь на продукте и его влиянии на бизнес-результаты.
 		</p>
 
 		<!-- Benefits -->
 		<div class="mb-[40px] grid gap-4 sm:grid-cols-3">
-			{#each benefits as { icon: Icon, label }}
+			{#each benefits as { icon: Icon, label }, i}
 				<div
 					class="flex flex-col gap-[20px] rounded-2xl bg-[var(--color-background-secondary)] p-5 shadow-sm"
+					use:reveal={{ delay: 120 + i * 70 }}
 				>
 					<div class="flex gap-3 w-full justify-between">
 						<span class="text-[var(--color-paragraph-1)]" aria-hidden="true">
@@ -113,11 +119,14 @@
 		</div>
 
 		<!-- Competencies -->
-		<h3 class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]">Наши компетенции</h3>
+		<h3 class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 0 }}>
+			Наши компетенции
+		</h3>
 		<div class="mb-[40px] grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-			{#each competencies as { icon: Icon, label }}
+			{#each competencies as { icon: Icon, label }, i}
 				<div
 					class="flex flex-col gap-[20px] rounded-2xl bg-[var(--color-background-secondary)] p-5 shadow-sm"
+					use:reveal={{ delay: 80 + i * 60 }}
 				>
 					<div class="flex items-center gap-3 w-full justify-between">
 						<span class="text-[var(--color-paragraph-1)]" aria-hidden="true">
@@ -136,11 +145,14 @@
 		</div>
 
 		<!-- How we work -->
-		<h3 class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]">Как мы работаем</h3>
+		<h3 class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 0 }}>
+			Как мы работаем
+		</h3>
 		<div class="mb-[40px] flex flex-col gap-3 md:flex-row md:items-stretch md:gap-0">
 			{#each processSteps as step, i}
 				<div
 					class="flex flex-col flex-1 gap-[10px] rounded-2xl bg-[var(--color-background-secondary)] px-5 py-4"
+					use:reveal={{ delay: 80 + i * 70 }}
 				>
 					<span class="text-style-h2 text-[var(--color-paragraph-2)]">
 						{String(i + 1).padStart(2, '0')}
@@ -158,9 +170,14 @@
 		</div>
 
 		<!-- Experience & team -->
-		<h3 class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]">Наш опыт и команда</h3>
+		<h3 class="text-style-h3 mb-[40px] text-[var(--color-paragraph-1)]" use:reveal={{ delay: 0 }}>
+			Наш опыт и команда
+		</h3>
 		
-		<div class="mb-[20px] flex flex-col gap-[20px] rounded-2xl bg-[var(--color-background-secondary)] px-6 py-8 shadow-sm">
+		<div
+			class="mb-[20px] flex flex-col gap-[20px] rounded-2xl bg-[var(--color-background-secondary)] px-6 py-8 shadow-sm"
+			use:reveal={{ delay: 90 }}
+		>
 			<p class="text-style-h4 text-[var(--color-paragraph-1)]">
 				У нас есть опыт работы в крупных технологических и финансовых компаниях
 			</p>
@@ -176,7 +193,10 @@
 			</div>
 		</div>
 
-		<div class="mb-[40px] flex flex-col gap-[20px] rounded-2xl bg-[var(--color-background-secondary)] px-6 py-8 shadow-sm">
+		<div
+			class="mb-[40px] flex flex-col gap-[20px] rounded-2xl bg-[var(--color-background-secondary)] px-6 py-8 shadow-sm"
+			use:reveal={{ delay: 160 }}
+		>
 			<p class="text-style-h4 text-[var(--color-paragraph-1)]">И сильная академическая база</p>
 			<div class="flex items-center gap-[40px]">
 				{#each academicLogos as logo, i}
@@ -199,10 +219,15 @@
 		</div>
 
 		<!-- Results -->
-		<h3 class="text-style-h3 mb-6 text-[var(--color-paragraph-1)]">Наши результаты</h3>
+		<h3 class="text-style-h3 mb-6 text-[var(--color-paragraph-1)]" use:reveal={{ delay: 0 }}>
+			Наши результаты
+		</h3>
 		<div class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-			{#each results as result}
-				<div class={`flex flex-col gap-4 rounded-[40px] bg-[var(--color-background-secondary)] p-6 shadow-sm ${result.layout ?? ''}`}>
+			{#each results as result, i}
+				<div
+					class={`flex flex-col gap-4 rounded-[40px] bg-[var(--color-background-secondary)] p-6 shadow-sm ${result.layout ?? ''}`}
+					use:reveal={{ delay: 80 + i * 70 }}
+				>
 					<p class="text-style-h2 font-medium text-[var(--color-paragraph-1)]">{result.title}</p>
 					{#if result.chipRows}
 						<div class="flex flex-col gap-3">
