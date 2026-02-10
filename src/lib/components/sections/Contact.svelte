@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { Button } from '$lib/components';
 	import { reveal } from '$lib/actions/reveal';
 
@@ -20,11 +21,59 @@
 	let contact = $state('');
 	let projectType = $state('');
 	let projectStage = $state('');
+	let openDropdown = $state<'projectType' | 'projectStage' | null>(null);
+	let projectTypeDropdownEl = $state<HTMLElement | null>(null);
+	let projectStageDropdownEl = $state<HTMLElement | null>(null);
+
+	function getOptionLabel(options: { value: string; label: string }[], value: string) {
+		return options.find((opt) => opt.value === value)?.label ?? options[0].label;
+	}
+
+	function toggleDropdown(name: 'projectType' | 'projectStage') {
+		openDropdown = openDropdown === name ? null : name;
+	}
+
+	function chooseProjectType(value: string) {
+		projectType = value;
+		openDropdown = null;
+	}
+
+	function chooseProjectStage(value: string) {
+		projectStage = value;
+		openDropdown = null;
+	}
 
 	function handleSubmit(e: Event) {
 		e.preventDefault();
 		// TODO: submit to backend
 	}
+
+	onMount(() => {
+		const handlePointerDown = (event: Event) => {
+			const target = event.target as Node | null;
+			if (!target) return;
+
+			const clickedType = projectTypeDropdownEl?.contains(target) ?? false;
+			const clickedStage = projectStageDropdownEl?.contains(target) ?? false;
+			if (!clickedType && !clickedStage) {
+				openDropdown = null;
+			}
+		};
+
+		const handleEscape = (event: KeyboardEvent) => {
+			if (event.key === 'Escape') {
+				openDropdown = null;
+			}
+		};
+
+		document.addEventListener('pointerdown', handlePointerDown);
+		document.addEventListener('keydown', handleEscape);
+
+		return () => {
+			document.removeEventListener('pointerdown', handlePointerDown);
+			document.removeEventListener('keydown', handleEscape);
+		};
+	});
 </script>
 
 <section
@@ -56,7 +105,7 @@
 			</p>
 		</div>
 
-		<form class="flex flex-col gap-[10px] md:gap-6" onsubmit={handleSubmit}>
+		<form class="contact-form flex flex-col gap-[10px] md:gap-6" onsubmit={handleSubmit}>
 			<div class="flex flex-col gap-[10px] md:gap-[20px]" use:reveal={{ delay: 180 }}>
 				<label for="contact-field" class="text-style-p2 text-[var(--color-paragraph-2)]">
 					Как с вами связаться?
@@ -66,35 +115,105 @@
 					type="text"
 					bind:value={contact}
 					placeholder="Укажите свой email или телеграм"
-					class="contact-input h-12 w-full rounded-full border border-[#8d8d8d] bg-transparent px-5 text-style-p1 text-[#f2f2f2] placeholder:text-[#8d8d8d] focus:border-[#d2d2d2] focus:outline-none focus:ring-1 focus:ring-[#d2d2d2]"
+					class="contact-input h-12 w-full rounded-full border border-[#8d8d8d] bg-transparent px-5 text-style-p1 text-[var(--color-paragraph-1)] caret-[var(--color-paragraph-1)] placeholder:text-[#8d8d8d] focus:border-[#d2d2d2] focus:placeholder-transparent focus:outline-none focus:ring-1 focus:ring-[#d2d2d2]"
 					autocomplete="email"
 				/>
 			</div>
 
-			<div class="grid gap-[10px] sm:grid-cols-2 sm:gap-4" use:reveal={{ delay: 240 }}>
-				<div>
-					<label for="project-type" class="sr-only">Тип проекта</label>
-					<select
-						id="project-type"
-						bind:value={projectType}
-						class="contact-select h-12 w-full appearance-none rounded-full border border-[#8d8d8d] bg-transparent px-5 pr-10 text-style-p1 text-[#d6d6d6] focus:border-[#d2d2d2] focus:outline-none focus:ring-1 focus:ring-[#d2d2d2]"
+			<div class="contact-dropdown-row grid gap-[10px] sm:grid-cols-2 sm:gap-4" use:reveal={{ delay: 240 }}>
+				<div class="contact-dropdown" class:is-open={openDropdown === 'projectType'} bind:this={projectTypeDropdownEl}>
+					<label for="project-type-button" class="sr-only">Тип проекта</label>
+					<button
+						id="project-type-button"
+						type="button"
+						class="contact-dropdown-trigger text-style-p1"
+						aria-haspopup="listbox"
+						aria-expanded={openDropdown === 'projectType'}
+						aria-controls="project-type-listbox"
+						onclick={() => toggleDropdown('projectType')}
 					>
-						{#each projectTypes as opt}
-							<option value={opt.value}>{opt.label}</option>
-						{/each}
-					</select>
+						<span class:contact-dropdown-placeholder={!projectType}>
+							{getOptionLabel(projectTypes, projectType)}
+						</span>
+						<svg
+							class:contact-dropdown-chevron-open={openDropdown === 'projectType'}
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							aria-hidden="true"
+						>
+							<path d="M12 15.4L6 9.4L7.4 8L12 12.6L16.6 8L18 9.4L12 15.4Z" fill="#8d8d8d" />
+						</svg>
+					</button>
+					<input type="hidden" name="projectType" value={projectType} />
+
+					{#if openDropdown === 'projectType'}
+						<ul id="project-type-listbox" class="contact-dropdown-menu" role="listbox">
+							{#each projectTypes as opt}
+								<li>
+									<button
+										type="button"
+										class="contact-dropdown-option text-style-p1"
+										class:is-selected={projectType === opt.value}
+										role="option"
+										aria-selected={projectType === opt.value}
+										onclick={() => chooseProjectType(opt.value)}
+									>
+										{opt.label}
+									</button>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</div>
-				<div>
-					<label for="project-stage" class="sr-only">Новый или существующий проект</label>
-					<select
-						id="project-stage"
-						bind:value={projectStage}
-						class="contact-select h-12 w-full appearance-none rounded-full border border-[#8d8d8d] bg-transparent px-5 pr-10 text-style-p1 text-[#d6d6d6] focus:border-[#d2d2d2] focus:outline-none focus:ring-1 focus:ring-[#d2d2d2]"
+				<div class="contact-dropdown" class:is-open={openDropdown === 'projectStage'} bind:this={projectStageDropdownEl}>
+					<label for="project-stage-button" class="sr-only">Новый или существующий проект</label>
+					<button
+						id="project-stage-button"
+						type="button"
+						class="contact-dropdown-trigger text-style-p1"
+						aria-haspopup="listbox"
+						aria-expanded={openDropdown === 'projectStage'}
+						aria-controls="project-stage-listbox"
+						onclick={() => toggleDropdown('projectStage')}
 					>
-						{#each projectStageOptions as opt}
-							<option value={opt.value}>{opt.label}</option>
-						{/each}
-					</select>
+						<span class:contact-dropdown-placeholder={!projectStage}>
+							{getOptionLabel(projectStageOptions, projectStage)}
+						</span>
+						<svg
+							class:contact-dropdown-chevron-open={openDropdown === 'projectStage'}
+							xmlns="http://www.w3.org/2000/svg"
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							aria-hidden="true"
+						>
+							<path d="M12 15.4L6 9.4L7.4 8L12 12.6L16.6 8L18 9.4L12 15.4Z" fill="#8d8d8d" />
+						</svg>
+					</button>
+					<input type="hidden" name="projectStage" value={projectStage} />
+
+					{#if openDropdown === 'projectStage'}
+						<ul id="project-stage-listbox" class="contact-dropdown-menu" role="listbox">
+							{#each projectStageOptions as opt}
+								<li>
+									<button
+										type="button"
+										class="contact-dropdown-option text-style-p1"
+										class:is-selected={projectStage === opt.value}
+										role="option"
+										aria-selected={projectStage === opt.value}
+										onclick={() => chooseProjectStage(opt.value)}
+									>
+										{opt.label}
+									</button>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</div>
 			</div>
 
@@ -113,9 +232,105 @@
 </section>
 
 <style>
-	.contact-select {
-		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M12 15.4L6 9.4L7.4 8L12 12.6L16.6 8L18 9.4L12 15.4Z' fill='%238d8d8d'/%3E%3C/svg%3E");
-		background-repeat: no-repeat;
-		background-position: right 1rem center;
+	.contact-form {
+		isolation: isolate;
+	}
+
+	.contact-dropdown-row {
+		position: relative;
+		z-index: 120;
+	}
+
+	.contact-dropdown {
+		position: relative;
+		z-index: 50;
+	}
+
+	.contact-dropdown.is-open {
+		z-index: 60;
+	}
+
+	.contact-dropdown-trigger {
+		width: 100%;
+		height: 3rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.75rem;
+		border-radius: 999px;
+		border: 1px solid #8d8d8d;
+		background: transparent;
+		padding: 0 1rem 0 1.25rem;
+		color: var(--color-paragraph-1);
+		text-align: left;
+		outline: none;
+		transition:
+			border-color 0.2s ease,
+			box-shadow 0.2s ease;
+	}
+
+	.contact-dropdown-trigger:focus-visible {
+		border-color: #d2d2d2;
+		box-shadow: 0 0 0 1px #d2d2d2;
+	}
+
+	.contact-dropdown-placeholder {
+		color: #8d8d8d;
+	}
+
+	.contact-dropdown-trigger svg {
+		flex-shrink: 0;
+		transition: transform 0.25s ease;
+	}
+
+	.contact-dropdown-chevron-open {
+		transform: rotate(180deg);
+	}
+
+	.contact-dropdown-menu {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: calc(100% + 0.5rem);
+		z-index: 70;
+		max-height: 16rem;
+		overflow-y: auto;
+		border-radius: 1rem;
+		border: 1px solid #d9d9d9;
+		background: #f5f5f5;
+		padding: 0.4rem;
+		box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+		z-index: 100;
+	}
+
+	.contact-dropdown-option {
+		width: 100%;
+		display: block;
+		text-align: left;
+		border: 0;
+		border-radius: 0.75rem;
+		background: transparent;
+		color: #141415;
+		padding: 0.65rem 0.75rem;
+		cursor: pointer;
+		transition: background-color 0.15s ease;
+		z-index: 100;
+	}
+
+	.contact-dropdown-option:hover {
+		background: #e7e7e8;
+	}
+
+	.contact-dropdown-option.is-selected {
+		background: #1f1f20;
+		color: #ffffff;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.contact-dropdown-trigger,
+		.contact-dropdown-trigger svg,
+		.contact-dropdown-option {
+			transition: none;
+		}
 	}
 </style>
