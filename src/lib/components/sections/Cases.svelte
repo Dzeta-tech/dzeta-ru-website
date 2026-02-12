@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import patoshiSvg from '$lib/assets/patoshi.svg?raw';
 	import patoshi1Svg from '$lib/assets/patoshi1.svg?raw';
@@ -169,7 +168,9 @@
 		});
 	}
 
-	onMount(() => {
+	$effect(() => {
+		if (typeof window === 'undefined') return;
+
 		const updateAll = () => {
 			for (let i = 0; i < cases.length; i += 1) {
 				updateCarouselState(i);
@@ -180,7 +181,6 @@
 		window.addEventListener('resize', handleResize, { passive: true });
 		requestAnimationFrame(updateAll);
 		const delayedInit = window.setTimeout(updateAll, 220);
-
 		const skeletonTimer = window.setTimeout(() => {
 			slidesSkeletonReady = true;
 		}, 120);

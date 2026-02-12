@@ -28,13 +28,13 @@
 	const isLink = $derived(typeof href === 'string' && href.length > 0);
 
 	const baseClasses =
-		'inline-flex items-center justify-center gap-2 rounded-full py-[10px] px-[15px] font-sans font-normal transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background-secondary)]';
+		'btn-base inline-flex items-center justify-center gap-2 rounded-full py-[10px] px-[15px] font-sans font-normal border-2 border-transparent box-border focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--color-background-secondary)]';
 
 	const variantClasses: Record<NonNullable<Props['variant']>, string> = {
 		default:
-			'bg-[var(--color-button-bg)] text-[var(--color-button-text)] hover:opacity-90 focus-visible:ring-[var(--color-button-bg)]',
+			'bg-[var(--color-button-bg)] text-[var(--color-button-text)] focus-visible:ring-[var(--color-button-bg)]',
 		outline:
-			'bg-[var(--color-button-bg)] text-[var(--color-button-text)] border-2 border-[var(--color-button-border)] hover:bg-[var(--color-button-border)] hover:text-[var(--color-paragraph-1)] focus-visible:ring-[var(--color-button-border)]',
+			'bg-[var(--color-button-bg)] text-[var(--color-button-text)] border-[var(--color-button-border)] focus-visible:ring-[var(--color-button-border)]',
 		disabled:
 			'bg-[var(--color-button-bg-disabled)] text-[var(--color-button-text)] cursor-not-allowed opacity-90'
 	};
@@ -81,3 +81,15 @@
 		{/if}
 	</button>
 {/if}
+
+<style>
+	.btn-base:not(:disabled):not(.cursor-not-allowed) {
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+	}
+
+	.btn-base:hover:not(:disabled):not(.cursor-not-allowed) {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), 0 10px 40px rgba(0, 0, 0, 0.15);
+	}
+</style>
