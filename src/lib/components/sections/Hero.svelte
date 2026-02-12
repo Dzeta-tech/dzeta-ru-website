@@ -27,6 +27,7 @@
 </script>
 
 <section
+	data-snap
 	class="bg-[var(--color-background-primary)] px-4 pt-4 sm:px-6 lg:px-8"
 	aria-label="Главный экран"
 >

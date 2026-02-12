@@ -78,6 +78,7 @@
 
 <section
 	id="contact"
+	data-snap
 	class="scroll-mt-16 bg-[var(--color-section-alt)] py-16 md:py-24"
 	aria-labelledby="contact-heading"
 >

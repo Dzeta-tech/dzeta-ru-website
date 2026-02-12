@@ -102,6 +102,7 @@
 	let carouselRefs: Array<HTMLDivElement | null> = [];
 	let canScrollLeft = $state(Array(cases.length).fill(false));
 	let canScrollRight = $state(Array(cases.length).fill(false));
+	let slidesSkeletonReady = $state(false);
 
 	function setScrollState(index: number, left: boolean, right: boolean) {
 		const leftState = [...canScrollLeft];
@@ -180,15 +181,21 @@
 		requestAnimationFrame(updateAll);
 		const delayedInit = window.setTimeout(updateAll, 220);
 
+		const skeletonTimer = window.setTimeout(() => {
+			slidesSkeletonReady = true;
+		}, 120);
+
 		return () => {
 			window.removeEventListener('resize', handleResize);
 			window.clearTimeout(delayedInit);
+			window.clearTimeout(skeletonTimer);
 		};
 	});
 </script>
 
 <section
 	id="cases"
+	data-snap
 	class="scroll-mt-16 px-[30px] bg-[var(--color-background-primary)] py-16 md:py-24"
 	aria-labelledby="cases-heading"
 >
@@ -222,6 +229,11 @@
 							class="case-carousel__slide flex-shrink-0 overflow-hidden rounded-2xl bg-[var(--color-paragraph-1)]"
 							style="width: min(85vw, 520px); height: min(50vw, 320px);"
 						>
+							<div
+								class="case-carousel__skeleton"
+								class:loaded={slidesSkeletonReady}
+								aria-hidden="true"
+							></div>
 							<div class="case-carousel__svg h-full w-full" aria-hidden="true">
 								{@html svg}
 							</div>
@@ -295,6 +307,43 @@
 	.case-carousel::-webkit-scrollbar {
 		display: none;
 	}
+	.case-carousel__slide {
+		position: relative;
+	}
+
+	.case-carousel__skeleton {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			110deg,
+			rgba(255, 255, 255, 0.08) 40%,
+			rgba(255, 255, 255, 0.12) 50%,
+			rgba(255, 255, 255, 0.08) 60%
+		);
+		background-size: 200% 100%;
+		animation: case-skeleton-shine 1.2s ease-in-out infinite;
+		opacity: 1;
+		transition: opacity 0.25s ease;
+		pointer-events: none;
+	}
+
+	.case-carousel__skeleton.loaded {
+		opacity: 0;
+		animation: none;
+	}
+
+	@keyframes case-skeleton-shine {
+		to {
+			background-position: 200% 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.case-carousel__skeleton {
+			animation: none;
+		}
+	}
+
 	.case-carousel__svg :global(svg) {
 		width: 100%;
 		height: 100%;

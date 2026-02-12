@@ -16,6 +16,7 @@
 	let carouselRef = $state<HTMLDivElement | null>(null);
 	let canScrollLeft = $state(false);
 	let canScrollRight = $state(false);
+	let imageSkeletonReady = $state(false);
 
 	function updateCarouselState() {
 		if (!carouselRef) return;
@@ -72,16 +73,21 @@
 		window.addEventListener('resize', handleResize, { passive: true });
 		requestAnimationFrame(updateCarouselState);
 		const delayedInit = window.setTimeout(updateCarouselState, 220);
+		const skeletonTimer = window.setTimeout(() => {
+			imageSkeletonReady = true;
+		}, 120);
 
 		return () => {
 			window.removeEventListener('resize', handleResize);
 			window.clearTimeout(delayedInit);
+			window.clearTimeout(skeletonTimer);
 		};
 	});
 </script>
 
 <section
 	id="blog"
+	data-snap
 	class="scroll-mt-16 bg-[var(--color-header-bg)] py-16 md:py-24"
 	aria-labelledby="blog-heading"
 >
@@ -118,6 +124,11 @@
 							class="blog-card__image relative flex h-[310px] items-end overflow-hidden rounded-[28px] bg-[var(--color-paragraph-1)]"
 							aria-hidden="true"
 						>
+							<div
+								class="blog-card__image-skeleton"
+								class:loaded={imageSkeletonReady}
+								aria-hidden="true"
+							></div>
 							<!-- Плейсхолдер: тёмный фон с простым паттерном -->
 							<div
 								class="absolute inset-0 opacity-90"
@@ -197,6 +208,44 @@
 	}
 	.blog-scroll::-webkit-scrollbar {
 		display: none;
+	}
+
+	.blog-card__image {
+		position: relative;
+	}
+
+	.blog-card__image-skeleton {
+		position: absolute;
+		inset: 0;
+		background: linear-gradient(
+			110deg,
+			rgba(255, 255, 255, 0.06) 40%,
+			rgba(255, 255, 255, 0.1) 50%,
+			rgba(255, 255, 255, 0.06) 60%
+		);
+		background-size: 200% 100%;
+		animation: blog-skeleton-shine 1.2s ease-in-out infinite;
+		opacity: 1;
+		transition: opacity 0.25s ease;
+		pointer-events: none;
+		z-index: 2;
+	}
+
+	.blog-card__image-skeleton.loaded {
+		opacity: 0;
+		animation: none;
+	}
+
+	@keyframes blog-skeleton-shine {
+		to {
+			background-position: 200% 0;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.blog-card__image-skeleton {
+			animation: none;
+		}
 	}
 
 	.blog-carousel-wrap {
